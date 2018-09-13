@@ -1,4 +1,4 @@
-package co.idwall.iddog.uteis;
+package co.idwall.iddog.adaptadores;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

@@ -3,4 +3,11 @@
     <string name="hint_email">Digite seu email</string>
     <string name="prompt_email">Email</string>
     <string name="prompt_acessar">Acessar</string>
+    <string name="fechar">Fechar</string>
+    <string name="carregando">Carregando...</string>
+    <string name="suporte">Erro de acesso, ligue para o suporte</string>
+    <string name="erro">ERRO</string>
+    <string name="sim">Sim</string>
+    <string name="nao">Não</string>
+    <string name="ok">Ok</string>
 </resources>
