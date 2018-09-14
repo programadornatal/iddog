@@ -3,9 +3,7 @@ package co.idwall.iddog;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.provider.Settings;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -14,19 +12,19 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import co.idwall.iddog.adaptadores.TabsPagerAdapter;
+import co.idwall.iddog.uteis.Contantes;
 
+import static co.idwall.iddog.uteis.Contantes.DOGUINHOS;
 import static co.idwall.iddog.uteis.Contantes.TOKEN;
 
 public class GaleriaActivity extends AppCompatActivity {
 
     SharedPreferences prefs;
     String token;
-    String[] doguinhos = {
-            "Husky",
-            "Labrador",
-            "Hound",
-            "Pug",
-    };
+
+    TabsPagerAdapter adapter;
+    TabLayout tabLayout;
+    ViewPager pager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,12 +33,9 @@ public class GaleriaActivity extends AppCompatActivity {
 
         prefs = getSharedPreferences(TOKEN, Context.MODE_PRIVATE);
         token = prefs.getString(TOKEN, null);
-        if(token != null) {
-            Log.i("TOKKKEN", token);
-        } else {
+        if(token == null) {
             showErroAcesso();
         }
-
         createToolBar();
         createTabLayout();
     }
@@ -48,8 +43,8 @@ public class GaleriaActivity extends AppCompatActivity {
     private void showErroAcesso() {
         AlertDialog.Builder alertbox = new AlertDialog.Builder(GaleriaActivity.this);
         alertbox.setIcon(android.R.drawable.ic_dialog_alert);
-        alertbox.setTitle("Sessão finalizada");
-        alertbox.setMessage("Sua sessão foi finalizada e por isso é necessário fazer um novo ");
+        alertbox.setTitle(R.string.sessao);
+        alertbox.setMessage(R.string.sessao_message);
         alertbox.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
                 finish();
@@ -60,24 +55,40 @@ public class GaleriaActivity extends AppCompatActivity {
 
     private void createToolBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("IDdog - Selecione o seu favorito abaixo");
+        toolbar.setTitle(R.string.tb_titulo);
         toolbar.setTitleTextColor(getResources().getColor(R.color.branca));
         toolbar.setBackgroundColor(getResources().getColor(R.color.laranja));
         setSupportActionBar(toolbar);
     }
     private void createTabLayout() {
-        //Toast.makeText(this, "TipoVA " + tipo_veiculo, Toast.LENGTH_SHORT).show();
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         // Caso queiram adicionar um icon //.setIcon(R.drawable.checklist_icone)
-        for(String i : doguinhos) {
+        for(String i : Contantes.DOGUINHOS) {
             tabLayout.addTab(tabLayout.newTab().setText(i));
         }
 
-        TabsPagerAdapter adapter = new TabsPagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
-        ViewPager pager = (ViewPager) findViewById(R.id.pager);
+        pager = (ViewPager) findViewById(R.id.pager);
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager) {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                alteraViewPager(tab.getPosition());
+                super.onTabSelected(tab);
+            }
+        });
+        alteraViewPager(0);
+    }
+
+    private void alteraViewPager(int selecionado) {
+        Log.i("SELE", selecionado + "");
+        // Log.i("SELE", DOGUINHOS[this.selecionado] + "");
+        adapter = new TabsPagerAdapter(
+                getSupportFragmentManager(),
+                token,
+                selecionado,
+                DOGUINHOS.length
+        );
         pager.setAdapter(adapter);
         pager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager));
     }
 }

@@ -34,7 +34,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     EditText edt_main_email;
     Button btn_main_acessar;
 
-    SharedPreferences.Editor editor;
+    SharedPreferences.Editor editor; // Para salvar o token localmente
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +47,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btn_main_acessar.setOnClickListener(this);
 
         // Dev
-        edt_main_email.setText("email@valido.com");
+        // edt_main_email.setText("email@valido.com");
         editor = getSharedPreferences(TOKEN, Context.MODE_PRIVATE).edit();
     }
 
@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         if(Validacoes.ValidaEmail(email)) {
             getTokenLogin(email); // Se e-mail válido faz acesso a servidor
         } else {
-           edt_main_email.setError("E-mail obrigatório inválido");
+           edt_main_email.setError(getString(R.string.email_obrigatorio));
         }
     }
 
@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                             JSONObject user = jsonObject.getJSONObject("user");
                             // Log.i("RESPOSTA", response.getString("user"));
                             // Log.i("RESPOSTA", user.getString("token"));
-                            salvarToken(user.getString("token"));
+                            salvarToken(user.getString(TOKEN));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

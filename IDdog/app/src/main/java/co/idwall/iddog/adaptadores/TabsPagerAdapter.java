@@ -11,14 +11,19 @@ import co.idwall.iddog.fragmentos.ItemGaleria;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
     private int tabs;
-    public TabsPagerAdapter(FragmentManager fm, int tabs) {
+    private String token;
+    private int doguinho;
+
+    public TabsPagerAdapter(FragmentManager fm, String token, int doguinho, int tabs) {
         super(fm);
         this.tabs = tabs;
+        this.token = token;
+        this.doguinho = doguinho;
     }
 
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = ItemGaleria.newInstance();
+        Fragment fragment = ItemGaleria.newInstance(this.token, this.doguinho);
         return fragment;
     }
 

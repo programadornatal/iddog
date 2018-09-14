@@ -10,4 +10,8 @@
     <string name="sim">Sim</string>
     <string name="nao">Não</string>
     <string name="ok">Ok</string>
+    <string name="sessao">Sessão finalizada</string>
+    <string name="sessao_message">Sua sessão foi finalizada e por isso é necessário fazer um novo</string>
+    <string name="tb_titulo">IDdog - Selecione o seu favorito abaixo</string>
+    <string name="email_obrigatorio">E-mail obrigatório inválido</string>
 </resources>
