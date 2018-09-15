@@ -5,7 +5,7 @@
     <string name="prompt_acessar">Acessar</string>
     <string name="fechar">Fechar</string>
     <string name="carregando">Carregando...</string>
-    <string name="suporte">Erro de acesso, ligue para o suporte</string>
+    <string name="suporte">Erro de acesso, ligue para o suporte :D</string>
     <string name="erro">ERRO</string>
     <string name="sim">Sim</string>
     <string name="nao">Não</string>
@@ -14,4 +14,7 @@
     <string name="sessao_message">Sua sessão foi finalizada e por isso é necessário fazer um novo</string>
     <string name="tb_titulo">IDdog - Selecione o seu favorito abaixo</string>
     <string name="email_obrigatorio">E-mail obrigatório inválido</string>
+    <string name="sem_internet">Você está sem internet no momento.</string>
+    <string name="conectar_wifi">É necessário uma conexão, Conectar Wi-Fi?</string>
+    <string name="voltar">Voltar</string>
 </resources>

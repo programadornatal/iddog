@@ -41,6 +41,7 @@ public class ImageAdapter extends BaseAdapter {
         ImageView imageView = new ImageView(context);
         Glide.with(context)
                 .load(images[position])
+                .thumbnail(Glide.with(context).load(R.drawable.loading))
                 .into(imageView);
         //imageView.setImageResource(images[position]);//Caso fosse imagem do Resource
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);

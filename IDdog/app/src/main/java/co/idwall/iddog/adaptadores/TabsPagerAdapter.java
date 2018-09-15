@@ -3,6 +3,8 @@ package co.idwall.iddog.adaptadores;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
+
 import co.idwall.iddog.fragmentos.ItemGaleria;
 
 /**
@@ -11,19 +13,15 @@ import co.idwall.iddog.fragmentos.ItemGaleria;
 
 public class TabsPagerAdapter extends FragmentPagerAdapter {
     private int tabs;
-    private String token;
-    private int doguinho;
 
-    public TabsPagerAdapter(FragmentManager fm, String token, int doguinho, int tabs) {
+    public TabsPagerAdapter(FragmentManager fm, int tabs) {
         super(fm);
         this.tabs = tabs;
-        this.token = token;
-        this.doguinho = doguinho;
     }
 
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = ItemGaleria.newInstance(this.token, this.doguinho);
+        Fragment fragment = ItemGaleria.newInstance(position);
         return fragment;
     }
 

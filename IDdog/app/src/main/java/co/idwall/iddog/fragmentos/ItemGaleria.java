@@ -1,7 +1,9 @@
 package co.idwall.iddog.fragmentos;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -41,6 +43,7 @@ import static co.idwall.iddog.uteis.Contantes.TOKEN;
 
 public class ItemGaleria extends Fragment implements AdapterView.OnItemClickListener {
     PackageManager packageManager;
+    SharedPreferences prefs;
     View v;
     GridView gv_item_galeria;
     LinearLayout ll_item_galeria;
@@ -48,12 +51,11 @@ public class ItemGaleria extends Fragment implements AdapterView.OnItemClickList
     int doguinho;
     String[] images;
 
-    public static ItemGaleria newInstance(String token, int doguinho) {
+    public static ItemGaleria newInstance(int doguinho) {
         ItemGaleria itemGaleria = new ItemGaleria();
-        Log.i("ITEM", doguinho + " ");
+        // Log.i("ITEM", doguinho + " ");
         // Bundle para passagem dos objetos até o Fragment
         Bundle args = new Bundle();
-        args.putString(TOKEN, token);
         args.putInt(DOGUINHO, doguinho);
         itemGaleria.setArguments(args);
         return itemGaleria;
@@ -75,6 +77,7 @@ public class ItemGaleria extends Fragment implements AdapterView.OnItemClickList
     }
 
     private void exibeGaleria() {
+
         // Controla quem vai aparecer
         ll_item_galeria.setVisibility(View.GONE);
         gv_item_galeria.setVisibility(View.VISIBLE);
@@ -85,6 +88,7 @@ public class ItemGaleria extends Fragment implements AdapterView.OnItemClickList
 
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
         //Log.i("CLIQUE", "Selecionou " + position);
         Intent intent = new Intent(getActivity(), FullImageActivity.class);
         view.buildDrawingCache();
@@ -96,51 +100,55 @@ public class ItemGaleria extends Fragment implements AdapterView.OnItemClickList
     }
 
     private void carregaDoguinho() {
+
         // Recuperando os dados enviados
-        token = getArguments().getString(TOKEN);
-        doguinho = getArguments().getInt(DOGUINHO);
-        Log.i("TD", " - " + doguinho);
+        prefs = getContext().getSharedPreferences(TOKEN, Context.MODE_PRIVATE);
+        token = prefs.getString(TOKEN, null);
+        if(token == null) {
+            Toast.makeText(getContext(), R.string.suporte, Toast.LENGTH_LONG).show();
+        } else {
+            doguinho = getArguments().getInt(DOGUINHO);
 
-        // Criação do objeto email para envio ao servidor
-
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.GET, // Método
-                FEED + DOGUINHOS[doguinho], // url
-                null,
-                new Response.Listener<JSONObject>() { // Resposta com um Objeto JSON
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        // JSONObject jsonObject = response;
-                        try {
-                            JSONArray jsonArray = response.getJSONArray("list");
-                            // Log.i("RESPOSTA", "" + jsonArray.length()); // Vem tudo
-                            images = new String[jsonArray.length()];
-                            for(int i = 0; i < jsonArray.length(); i++) {
-                                images[i] = jsonArray.getString(i);
+            // Criação do objeto email para envio ao servidor
+            final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                    Request.Method.GET, // Método
+                    FEED + DOGUINHOS[doguinho], // url
+                    null,
+                    new Response.Listener<JSONObject>() { // Resposta com um Objeto JSON
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            // JSONObject jsonObject = response;
+                            try {
+                                JSONArray jsonArray = response.getJSONArray("list");
+                                // Log.i("RESPOSTA", "" + jsonArray.length()); // Vem tudo
+                                images = new String[jsonArray.length()];
+                                for (int i = 0; i < jsonArray.length(); i++) {
+                                    images[i] = jsonArray.getString(i);
+                                }
+                                exibeGaleria();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getContext(), R.string.suporte, Toast.LENGTH_SHORT).show();
                             }
-                            exibeGaleria();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                        }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Log.i(getString(R.string.erro),
+                                    error.toString() + ":" + error.getMessage() + "" + error.getCause());
+                            error.printStackTrace();
                             Toast.makeText(getContext(), R.string.suporte, Toast.LENGTH_SHORT).show();
                         }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.i(getString(R.string.erro),
-                                error.toString() + ":" + error.getMessage() + "" + error.getCause());
-                        error.printStackTrace();
-                        Toast.makeText(getContext(), R.string.suporte, Toast.LENGTH_SHORT).show();
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", token);
-                return headers;
-            }
-        };
-        VolleySingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
+                    }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", token);
+                    return headers;
+                }
+            };
+            VolleySingleton.getInstance(getContext()).addToRequestQueue(jsonObjectRequest);
+        }
     }
 }

@@ -1,10 +1,13 @@
 package co.idwall.iddog;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -20,6 +23,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import co.idwall.iddog.uteis.ConexaoInternet;
 import co.idwall.iddog.uteis.Validacoes;
 import co.idwall.iddog.uteis.VolleySingleton;
 
@@ -35,6 +39,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     Button btn_main_acessar;
 
     SharedPreferences.Editor editor; // Para salvar o token localmente
+    SharedPreferences prefs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +53,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         // Dev
         // edt_main_email.setText("email@valido.com");
+        prefs = getSharedPreferences(TOKEN, Context.MODE_PRIVATE);
+        String token = prefs.getString(TOKEN, null);
         editor = getSharedPreferences(TOKEN, Context.MODE_PRIVATE).edit();
+        if(token != null) {
+            editor.clear();
+        }
     }
 
     // Controle geral de cliques de botões da aplicação
@@ -57,8 +67,32 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         int id = v.getId();
         switch (id) {
             case R.id.btn_main_acessar:
-            validaLogin();
+            verificaInternet();
             break;
+        }
+    }
+
+    // Será que tem internet?
+    void verificaInternet() {
+        if (!ConexaoInternet.temInternet(LoginActivity.this)) {
+            AlertDialog.Builder alertbox = new AlertDialog.Builder(LoginActivity.this);
+            alertbox.setIcon(android.R.drawable.ic_dialog_alert);
+            alertbox.setTitle(R.string.sem_internet);
+            alertbox.setMessage(R.string.conectar_wifi);
+            alertbox.setPositiveButton(R.string.sim, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int id) {
+                    startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                }
+            });
+            alertbox.setNegativeButton(R.string.nao, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    finish();
+                }
+            });
+            alertbox.show();
+        } else {
+            validaLogin();
         }
     }
 

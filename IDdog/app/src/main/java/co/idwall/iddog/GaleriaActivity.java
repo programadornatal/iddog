@@ -4,12 +4,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import co.idwall.iddog.adaptadores.TabsPagerAdapter;
 import co.idwall.iddog.uteis.Contantes;
@@ -72,20 +71,16 @@ public class GaleriaActivity extends AppCompatActivity {
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(pager) {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                alteraViewPager(tab.getPosition());
+                alteraViewPager();
                 super.onTabSelected(tab);
             }
         });
-        alteraViewPager(0);
+        alteraViewPager();
     }
 
-    private void alteraViewPager(int selecionado) {
-        Log.i("SELE", selecionado + "");
-        // Log.i("SELE", DOGUINHOS[this.selecionado] + "");
+    private void alteraViewPager() {
         adapter = new TabsPagerAdapter(
                 getSupportFragmentManager(),
-                token,
-                selecionado,
                 DOGUINHOS.length
         );
         pager.setAdapter(adapter);
